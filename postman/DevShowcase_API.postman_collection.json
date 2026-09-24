@@ -1,0 +1,559 @@
+{
+	"info": {
+		"_postman_id": "9f32b851-9e8c-4f74-8b63-devshowcase-final",
+		"name": "DevShowcase API - Etapa Final (Produção)",
+		"description": "Coleção completa para validação e gravação da apresentação da Etapa Final da DevShowcase API.\nContém os novos endpoints (Upvote, Feedbacks com recálculo de nota média, Busca paginada com filtro de tecnologia) e simulação de erros 400 e 404 para teste do Manipulador Global de Erros.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "createdProfileId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "createdTechId1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "createdTechId2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "createdProjectId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "0. Manutenção do Banco (Zerar Tabelas)",
+			"item": [
+				{
+					"name": "POST - Limpar e Zerar Todas as Tabelas do Banco",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/database/reset",
+							"host": ["{{baseUrl}}"],
+							"path": ["database", "reset"]
+						},
+						"description": "Limpa todas as tabelas do banco deixando-o completamente vazio com 0 registros."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Preparação (Perfis e Tecnologias)",
+			"item": [
+				{
+					"name": "1.1. POST - Cadastrar Perfil de Desenvolvedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (pm.response.code === 201 && jsonData.data && jsonData.data.id) {",
+									"    pm.collectionVariables.set('createdProfileId', jsonData.data.id);",
+									"    console.log('ID do Perfil salvo:', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Guilherme Barbosa\",\n  \"email\": \"guilherme.barbosa@example.com\",\n  \"bio\": \"Desenvolvedor Full Stack apaixonado por Node.js e TypeScript\",\n  \"githubUrl\": \"https://github.com/GuilhermeBarbosa556\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/profiles",
+							"host": ["{{baseUrl}}"],
+							"path": ["profiles"]
+						},
+						"description": "Cadastra um desenvolvedor na base relacional e armazena o UUID."
+					},
+					"response": []
+				},
+				{
+					"name": "1.2. POST - Cadastrar Tecnologia (Node.js)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (pm.response.code === 201 && jsonData.data && jsonData.data.id) {",
+									"    pm.collectionVariables.set('createdTechId1', jsonData.data.id);",
+									"    console.log('ID da Tecnologia 1 salvo:', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Node.js\",\n  \"category\": \"Backend\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/technologies",
+							"host": ["{{baseUrl}}"],
+							"path": ["technologies"]
+						},
+						"description": "Cadastra tecnologia Node.js."
+					},
+					"response": []
+				},
+				{
+					"name": "1.3. POST - Cadastrar Tecnologia (PostgreSQL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (pm.response.code === 201 && jsonData.data && jsonData.data.id) {",
+									"    pm.collectionVariables.set('createdTechId2', jsonData.data.id);",
+									"    console.log('ID da Tecnologia 2 salvo:', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PostgreSQL\",\n  \"category\": \"Database\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/technologies",
+							"host": ["{{baseUrl}}"],
+							"path": ["technologies"]
+						},
+						"description": "Cadastra tecnologia PostgreSQL."
+					},
+					"response": []
+				},
+				{
+					"name": "1.4. POST - Cadastrar Projeto (DevShowcase API)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (pm.response.code === 201 && jsonData.data && jsonData.data.id) {",
+									"    pm.collectionVariables.set('createdProjectId', jsonData.data.id);",
+									"    console.log('ID do Projeto salvo:', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"DevShowcase API\",\n  \"description\": \"API REST robusta com Node.js, Express, TypeScript, Prisma ORM e PostgreSQL em nuvem\",\n  \"repositoryUrl\": \"https://github.com/User-TADS/DevShowcaseAPI-1\",\n  \"liveUrl\": \"https://devshowcase-api.onrender.com\",\n  \"profileId\": \"{{createdProfileId}}\",\n  \"technologyIds\": [\n    \"{{createdTechId1}}\",\n    \"{{createdTechId2}}\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects"]
+						},
+						"description": "Cadastra o projeto com relacionamento 1:N ao perfil e N:N às tecnologias cadastradas."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Novos Endpoints da Etapa Final",
+			"item": [
+				{
+					"name": "2.1. PUT - Incrementar Upvote (Curtidas/Estrelas)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Upvotes incrementado', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.upvotes).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{createdProjectId}}/upvote",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{createdProjectId}}", "upvote"]
+						},
+						"description": "Incrementa atomicamente em +1 as curtidas/estrelas (upvotes) do projeto no banco de dados."
+					},
+					"response": []
+				},
+				{
+					"name": "2.2. POST - Cadastrar Feedback 1 (Nota 5 - Recalcula Média)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Média atualizada para 5', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.projectAverageRating).to.eql(5);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"author\": \"Prof. Avaliador\",\n  \"content\": \"Excelente arquitetura em camadas de serviço, tipagem e deploy contínuo!\",\n  \"rating\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{createdProjectId}}/feedbacks",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{createdProjectId}}", "feedbacks"]
+						},
+						"description": "Cadastra o primeiro feedback com nota 5. A camada de serviço calcula e atualiza averageRating = 5.0."
+					},
+					"response": []
+				},
+				{
+					"name": "2.3. POST - Cadastrar Feedback 2 (Nota 4 - Recalcula Média para 4.5)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Média atualizada para 4.5', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.projectAverageRating).to.eql(4.5);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"author\": \"Comunidade Open Source\",\n  \"content\": \"Código limpo, documentação Swagger interativa e excelente tratamento de exceções!\",\n  \"rating\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{createdProjectId}}/feedbacks",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{createdProjectId}}", "feedbacks"]
+						},
+						"description": "Cadastra segundo feedback com nota 4. A camada de serviço calcula e atualiza averageRating = (5 + 4) / 2 = 4.5."
+					},
+					"response": []
+				},
+				{
+					"name": "2.4. GET - Buscar Projetos (Filtro por Tecnologia e Paginação)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Retorna estrutura de paginação', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.pagination).to.have.property('total');",
+									"    pm.expect(jsonData.pagination).to.have.property('page');",
+									"    pm.expect(jsonData.pagination).to.have.property('limit');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects?technology=Node.js&page=1&limit=5",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects"],
+							"query": [
+								{
+									"key": "technology",
+									"value": "Node.js",
+									"description": "Filtro por tecnologia utilizada"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número da página"
+								},
+								{
+									"key": "limit",
+									"value": "5",
+									"description": "Limite de itens por página"
+								}
+							]
+						},
+						"description": "Busca projetos aplicando filtro por tecnologia (Node.js) e controle de paginação (page=1, limit=5)."
+					},
+					"response": []
+				},
+				{
+					"name": "2.5. GET - Buscar Projeto por ID (Com Média e Upvotes)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Projeto contém upvotes e averageRating', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('upvotes');",
+									"    pm.expect(jsonData.data).to.have.property('averageRating');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{createdProjectId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{createdProjectId}}"]
+						},
+						"description": "Retorna o projeto completo, exibindo as curtidas (upvotes), nota média recalculada (4.5), desenvolvedor e tecnologias."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Demonstração do Tratamento Global de Erros",
+			"item": [
+				{
+					"name": "3.1. Simulação 400 Bad Request - Nota Inválida (Rating = 6)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 400 Bad Request', function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test('Formato amigável de erro', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql('error');",
+									"    pm.expect(jsonData.statusCode).to.eql(400);",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"author\": \"Aluno Teste\",\n  \"content\": \"Tentativa de nota acima do permitido\",\n  \"rating\": 6\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{createdProjectId}}/feedbacks",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{createdProjectId}}", "feedbacks"]
+						},
+						"description": "Demonstração de resposta 400 Bad Request com lista detalhada de erros formatada pelo middleware global quando a nota é maior que 5."
+					},
+					"response": []
+				},
+				{
+					"name": "3.2. Simulação 400 Bad Request - Campos Obrigatórios Ausentes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 400 Bad Request', function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Sem título e sem profileId\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects"]
+						},
+						"description": "Demonstração de validação Zod retornando 400 com os campos faltantes formatados de forma clara."
+					},
+					"response": []
+				},
+				{
+					"name": "3.3. Simulação 404 Not Found - Projeto Inexistente no Upvote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 404 Not Found', function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test('Mensagem amigável de recurso não encontrado', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql('error');",
+									"    pm.expect(jsonData.statusCode).to.eql(404);",
+									"    pm.expect(jsonData.message).to.include('não foi encontrado');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/00000000-0000-0000-0000-000000000000/upvote",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "00000000-0000-0000-0000-000000000000", "upvote"]
+						},
+						"description": "Demonstração do tratamento global 404 Not Found disparado pela camada de serviço ao tentar dar upvote em ID inexistente."
+					},
+					"response": []
+				},
+				{
+					"name": "3.4. Simulação 404 Not Found - Rota Inexistente na API",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code é 404 Not Found', function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test('Mensagem de rota desconhecida', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.statusCode).to.eql(404);",
+									"    pm.expect(jsonData.message).to.include('não encontrada');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/endpoint-inexistente",
+							"host": ["{{baseUrl}}"],
+							"path": ["endpoint-inexistente"]
+						},
+						"description": "Demonstração do manipulador global para qualquer rota não mapeada na aplicação."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
